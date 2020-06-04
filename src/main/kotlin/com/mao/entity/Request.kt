@@ -7,14 +7,18 @@ enum class RequestType {
 }
 
 enum class DataType {
-    BOOK, BOOK_CHAPTER, BJX, BUDDHIST, BUDDHIST_CHAPTER, LIVE, MOVIE, PIC, ERROR
+    BOOK, BJX, BUDDHIST, LIVE, MOVIE, PIC, ERROR
+}
+
+enum class DataMethod {
+    SRC, LIST, PAGE, CHAPTER, CHAPTERS, ERROR
 }
 
 object TypeOperation {
 
-    fun requestType(req: String?) : RequestType {
+    fun requestType(operation: String?) : RequestType {
         return try {
-            RequestType.valueOf(req?:"ERROR")
+            RequestType.valueOf(operation?:"ERROR")
         } catch (e: Exception) {
             RequestType.ERROR
         }
@@ -25,6 +29,14 @@ object TypeOperation {
             DataType.valueOf(data?:"ERROR")
         } catch (e: Exception) {
             DataType.ERROR
+        }
+    }
+
+    fun dataMethod(type: String?) : DataMethod {
+        return try {
+            DataMethod.valueOf(type?:"ERROR")
+        } catch (e: Exception) {
+            DataMethod.ERROR
         }
     }
 

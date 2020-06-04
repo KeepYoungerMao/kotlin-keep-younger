@@ -59,21 +59,3 @@ object HttpUtil {
     }
 
 }
-
-fun nextPosition(x: Int, y: Int) : Array<Int>? {
-    return if (x == 8) {
-        if (y == 8) null
-        else arrayOf(x, y+1)
-    } else {
-        if (y == 8) arrayOf(x+1, 0)
-        else arrayOf(x, y+1)
-    }
-}
-
-fun main(){
-    val arr = nextPosition(1,1)
-    if (null != arr){
-        println(arr[0])
-        println(arr[1])
-    }
-}

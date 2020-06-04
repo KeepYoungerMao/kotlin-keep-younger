@@ -31,11 +31,11 @@ class ApiController {
         return hisService.sudoKu(array)
     }
 
-    @RequestMapping("data/{request}/{data}/by/{type}")
-    fun dataOperation(@PathVariable("request") req: String,
+    @RequestMapping("data/{operation}/{data}/{type}")
+    fun dataOperation(@PathVariable("operation") operation: String,
                       @PathVariable("data") data: String,
                       @PathVariable("type") type: String, request: HttpServletRequest) : ResponseData<*> {
-        return dataService.dataOperation(req, data, type, request)
+        return dataService.dataOperation(operation, data, type, request)
     }
 
 }
