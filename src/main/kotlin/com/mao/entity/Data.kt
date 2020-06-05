@@ -1,6 +1,7 @@
 package com.mao.entity
 
 import com.mao.config.AllOpen
+import com.mao.config.NoArg
 
 @AllOpen class Operation(var update: Long?, var delete: Boolean?)
 
@@ -166,3 +167,5 @@ data class PicClass(var id: Long, var pid: Long, var name: String)
 data class PicClassVo(var id: Long, var name: String, var child: List<PicClassVo>)
 
 data class PicParam(var name: String?, var pid: Long?, var sid: Long?)
+
+data class PageData<T>(var total: Long, var current: Long, var param: Page, var data: T)

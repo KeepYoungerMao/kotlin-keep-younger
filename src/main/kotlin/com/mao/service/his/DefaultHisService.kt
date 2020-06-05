@@ -1,12 +1,13 @@
 package com.mao.service.his
 
-import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.mao.entity.Response
 import com.mao.entity.ResponseData
 import com.mao.entity.WeatherResult
 import com.mao.util.HttpUtil
+import org.apache.http.impl.client.CloseableHttpClient
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.util.regex.Pattern
 
@@ -17,32 +18,27 @@ class DefaultHisService : HisService {
         const val AK = "Po86Y8fZwYv5fpcQIX7MVk1DaMOl3VwB"
         const val GET_LOCATION_URL = "http://api.map.baidu.com/location/ip"
         const val GET_IP_ADDRESS_ERROR = "cannot request any message form SDK, please check whether ip is correct";
-        const val GET_WEATHER_URL = "http://wthrcdn.etouch.cn/weather_mini"
         const val GET_WEATHER_ERROR = "request service api failed. connect failed."
     }
+
+    @Autowired private lateinit var closeableHttpClient: CloseableHttpClient
 
     override fun addressIp(ip: String?): ResponseData<*> {
         if (null == ip)
             return Response.error("loss param: ip")
-        val map: Map<String, String> = mapOf("ip" to ip, "ak" to AK)
-        val result: String? = HttpUtil.get(GET_LOCATION_URL, map)
-        return Response.ok(result)
+        val json = HttpUtil.get("http://api.map.baidu.com/location/ip?ip=$ip&ak=$AK",closeableHttpClient)
+        return Response.ok(json)
     }
 
     override fun weatherCity(city: String?): ResponseData<*> {
-        if (null == city)
-            return Response.error("loss param: city")
-        val map: Map<String, String> = mapOf("city" to city)
-        val result: String = HttpUtil.getGZip(GET_WEATHER_URL,map)?:""
-        val data = try {
-            jacksonObjectMapper().readValue<WeatherResult>(result)
-        } catch (e: JsonProcessingException) {
-            null
-        }?: return Response.error(GET_WEATHER_ERROR)
-        if (data.status != 1000)
-            return Response.error(GET_WEATHER_ERROR)
-        transWeatherData(data)
-        return Response.ok(data.data)
+        val json = HttpUtil.get("http://wthrcdn.etouch.cn/weather_mini?city=$city", closeableHttpClient)
+        return try {
+            val result = jacksonObjectMapper().readValue<WeatherResult>(json ?: "")
+            transWeatherData(result)
+            Response.ok(result.data)
+        } catch (e: Exception) {
+            Response.error(GET_WEATHER_ERROR)
+        }
     }
 
     private fun transWeatherData(result: WeatherResult) {

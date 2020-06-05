@@ -5,16 +5,19 @@ import com.mao.service.data.DataService
 import com.mao.service.his.HisService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.client.RestTemplate
 import javax.servlet.http.HttpServletRequest
 
+/**
+ * api请求
+ * @author create by mao at 2020/06/03 19:21:32
+ */
 @RestController
 @RequestMapping("api2")
 class ApiController {
 
-    @Autowired
-    private lateinit var hisService: HisService
-    @Autowired
-    private lateinit var dataService: DataService
+    @Autowired private lateinit var hisService: HisService
+    @Autowired private lateinit var dataService: DataService
 
     @GetMapping("his/address/ip")
     fun addressIp(ip: String?) : ResponseData<*> {
