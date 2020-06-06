@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mao.mapper.DataDictMapper">
+
+    <select id="getDict" parameterType="com.mao.service.data.DataType" resultType="com.mao.entity.DataDict">
+        SELECT * FROM tt_data_dict WHERE `data` = #{data}
+    </select>
+
+</mapper>

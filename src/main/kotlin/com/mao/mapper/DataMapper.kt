@@ -1,16 +1,17 @@
 package com.mao.mapper
 
 import com.mao.entity.*
+import com.mao.service.data.DataType
 import org.apache.ibatis.annotations.Mapper
+import org.apache.ibatis.annotations.Param
 import org.springframework.stereotype.Repository
 
 @Repository
 @Mapper
 interface BookMapper {
-    fun getBookById() : Book
+    fun getBookById(@Param("id") id: Long) : Book
     fun getBooks() : MutableList<Book>
     fun getBookByPage() : MutableList<Book>
-    fun getBookClassify() : MutableList<Any>
     fun getBookChapterById() : BookChapter
     fun getBookChapters() : MutableList<BookChapter>
     fun updateBook()
@@ -100,4 +101,10 @@ interface PicMapper {
     fun savePic()
     fun savePics()
     fun deletePic()
+}
+
+@Repository
+@Mapper
+interface DataDictMapper {
+    fun getDict(@Param("data") data: DataType) : MutableList<DataDict>
 }

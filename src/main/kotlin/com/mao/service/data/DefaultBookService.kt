@@ -3,6 +3,7 @@ package com.mao.service.data
 import com.mao.entity.Response
 import com.mao.entity.ResponseData
 import com.mao.mapper.BookMapper
+import com.mao.mapper.DataDictMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import javax.servlet.http.HttpServletRequest
@@ -15,9 +16,16 @@ import javax.servlet.http.HttpServletRequest
 class DefaultBookService : BookService {
 
     @Autowired private lateinit var bookMapper: BookMapper
+    @Autowired private lateinit var dataDictMapper: DataDictMapper
 
     override fun getBookById(request: HttpServletRequest): ResponseData<*> {
-        return Response.ok(bookMapper.getBookById())
+        val param = request.getParameter("id")
+        val id = try {
+            param?.toLong()?:-1
+        } catch (e: NumberFormatException) {
+            return Response.error("invalid param id: $param")
+        }
+        return Response.ok(bookMapper.getBookById(id))
     }
 
     override fun getBooks(request: HttpServletRequest): ResponseData<*> {
@@ -29,7 +37,7 @@ class DefaultBookService : BookService {
     }
 
     override fun getBookClassify(request: HttpServletRequest): ResponseData<*> {
-        return Response.ok(bookMapper.getBookClassify())
+        return Response.ok(dataDictMapper.getDict(DataType.BOOK))
     }
 
     override fun getBookChapterById(request: HttpServletRequest): ResponseData<*> {

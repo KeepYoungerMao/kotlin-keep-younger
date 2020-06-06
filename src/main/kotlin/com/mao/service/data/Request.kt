@@ -1,5 +1,8 @@
 package com.mao.service.data
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import java.io.BufferedReader
+import java.io.InputStreamReader
 import javax.servlet.http.HttpServletRequest
 
 /**
@@ -53,7 +56,7 @@ object TypeOperation {
 
     fun requestType(operation: String?) : RequestType {
         return try {
-            RequestType.valueOf(operation?:"ERROR")
+            RequestType.valueOf(operation?.toUpperCase()?:"ERROR")
         } catch (e: Exception) {
             RequestType.ERROR
         }
@@ -61,7 +64,7 @@ object TypeOperation {
 
     fun dataType(data: String?) : DataType {
         return try {
-            DataType.valueOf(data?:"ERROR")
+            DataType.valueOf(data?.toUpperCase()?:"ERROR")
         } catch (e: Exception) {
             DataType.ERROR
         }
@@ -69,7 +72,7 @@ object TypeOperation {
 
     fun dataMethod(type: String?) : DataMethod {
         return try {
-            DataMethod.valueOf(type?:"ERROR")
+            DataMethod.valueOf(type?.toUpperCase()?:"ERROR")
         } catch (e: Exception) {
             DataMethod.ERROR
         }
@@ -83,6 +86,76 @@ object TypeOperation {
             RequestType.EDIT -> method == "POST"
             RequestType.REMOVE -> method == "DELETE"
             else -> false
+        }
+    }
+
+}
+
+/**
+ * 参数封装
+ */
+object ParamPackage {
+
+    /**
+     * 请求参数封装
+     * 将请求参数封装至实体类中
+     * 【注】此方法只适用于kotlin中
+     * 【注】封装的实体类必须是data class类型
+     *      由于data class类型只有一个全属性的构造器，这里直接使用该构造器构造，没有使用空构造
+     *      项目中配置了无参构造插件，但我没有对请求参数封装类作注解，使用全参构造就行，懒得判断
+     * 【注】实体类中只处理基本类型参数，其他参数一律不写入（目前不会）
+     * 【问题】：使用 parameter.type（也就是Class<?>）去判断类型时
+     *      只有 String::class.java 可以识别，其它识别不了。
+     *      也就是：判断 java.lang.Integer 时，使用 Int::class.java 判断为 false
+     *      【替代】：目前使用的是使用 parameter.type.name 进行判断
+     */
+    @Suppress("UNCHECKED_CAST")
+    fun <T> paramForm(request: HttpServletRequest, clazz: Class<T>) : T? {
+        val params = request.parameterMap
+        val proxy = clazz.constructors
+        if (proxy.isEmpty())
+            return null
+        val constructor = proxy[0]
+        val parameters = constructor.parameters
+        if (parameters.isEmpty())
+            return null
+        val args = arrayOfNulls<Any?>(parameters.size)
+        try {
+            parameters.forEachIndexed { i, parameter -> kotlin.run {
+                val name = parameter.name
+                val value = params[name]
+                when (parameter.type.name) {
+                    "java.lang.Integer" -> args[i] = value?.get(0)?.toInt()
+                    "java.lang.Short" -> args[i] = value?.get(0)?.toShort()
+                    "java.lang.Byte" -> args[i] = value?.get(0)?.toByte()
+                    "java.lang.Boolean" -> args[i] = value?.get(0)?.toBoolean()
+                    "java.lang.Long" -> args[i] = value?.get(0)?.toLong()
+                    "java.lang.Float" -> args[i] = value?.get(0)?.toFloat()
+                    "java.lang.Double" -> args[i] = value?.get(0)?.toDouble()
+                    "java.lang.String" -> args[i] = value?.get(0)
+                    else -> args[i] = null
+                }
+            } }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return null
+        }
+        return constructor.newInstance(*args) as T
+    }
+
+    /**
+     * 请求参数封装
+     * body数据封装至实体类中
+     * 直接使用Jackson读取转化即可。
+     */
+    fun <T> paramBody(request: HttpServletRequest, t: Class<T>) : T? {
+        val reader = BufferedReader(InputStreamReader(request.inputStream))
+        val sb = StringBuilder()
+        reader.forEachLine { sb.append(it) }
+        return try {
+            jacksonObjectMapper().readValue(sb.toString(),t)
+        } catch (e: Exception) {
+            null
         }
     }
 

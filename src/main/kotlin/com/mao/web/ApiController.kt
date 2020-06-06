@@ -5,7 +5,6 @@ import com.mao.service.data.DataService
 import com.mao.service.his.HisService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.client.RestTemplate
 import javax.servlet.http.HttpServletRequest
 
 /**
