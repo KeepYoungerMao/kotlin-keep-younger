@@ -10,10 +10,11 @@ import org.springframework.stereotype.Repository
 @Mapper
 interface BookMapper {
     fun getBookById(@Param("id") id: Long) : Book
-    fun getBooks() : MutableList<Book>
-    fun getBookByPage() : MutableList<Book>
-    fun getBookChapterById() : BookChapter
-    fun getBookChapters() : MutableList<BookChapter>
+    fun getBooks(param: BookParam) : MutableList<Book>
+    fun getBookByPage(param: BookParam) : MutableList<Book>
+    fun getBookTotalPage(param: BookParam) : Int
+    fun getBookChapterById(@Param("id") id: Long) : BookChapter
+    fun getBookChapters(@Param("book_id") book_id: Long) : MutableList<BookChapter>
     fun updateBook()
     fun updateBooks()
     fun updateBookChapter()

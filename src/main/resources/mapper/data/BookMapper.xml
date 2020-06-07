@@ -3,8 +3,79 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mao.mapper.BookMapper">
 
+    <!-- 查询古籍详情 -->
     <select id="getBookById" parameterType="java.lang.Long" resultType="com.mao.entity.Book">
         SELECT * FROM tt_book WHERE `id` = #{id}
+    </select>
+
+    <!-- 查询古籍列表 -->
+    <select id="getBooks" parameterType="com.mao.entity.BookParam" resultType="com.mao.entity.Book">
+        SELECT * FROM tt_book WHERE `delete` = FALSE
+        <if test="name != null and name != ''">
+            AND LOCATE(#{name},`name`) > 0
+        </if>
+        <if test="auth != null and auth != ''">
+            AND LOCATE(#{auth},`auth`) > 0
+        </if>
+        <if test="type != null and type > 0">
+            AND `type_id` = #{type}
+        </if>
+        <if test="dynasty != null and dynasty > 0">
+            AND `dynasty_id` = #{dynasty}
+        </if>
+        <if test="free != null">
+            AND `free` = #{free}
+        </if>
+        <if test="off_sale != null">
+            AND `off_sale` = #{off_sale}
+        </if>
+        LIMIT #{row}
+    </select>
+
+    <!-- 分页查询古籍列表 -->
+    <select id="getBookByPage" parameterType="com.mao.entity.BookParam" resultType="com.mao.entity.Book">
+        SELECT * FROM tt_book WHERE `delete` = FALSE
+        <if test="type != null and type > 0">
+            AND `type_id` = #{type}
+        </if>
+        <if test="dynasty != null and dynasty > 0">
+            AND `dynasty_id` = #{dynasty}
+        </if>
+        <if test="free != null">
+            AND `free` = #{free}
+        </if>
+        <if test="off_sale != null">
+            AND `off_sale` = #{off_sale}
+        </if>
+        LIMIT #{page},#{row}
+    </select>
+
+    <!-- 分页查询古籍，查询总页数 -->
+    <select id="getBookTotalPage" parameterType="com.mao.entity.BookParam" resultType="java.lang.Integer">
+        SELECT COUNT(`id`) FROM tt_book WHERE `delete` = FALSE
+        <if test="type != null and type > 0">
+            AND `type_id` = #{type}
+        </if>
+        <if test="dynasty != null and dynasty > 0">
+            AND `dynasty_id` = #{dynasty}
+        </if>
+        <if test="free != null">
+            AND `free` = #{free}
+        </if>
+        <if test="off_sale != null">
+            AND `off_sale` = #{off_sale}
+        </if>
+    </select>
+
+    <!-- 查询章节详情 -->
+    <select id="getBookChapterById" parameterType="java.lang.Long" resultType="com.mao.entity.BookChapter">
+        SELECT * FROM tt_book_chapter WHERE `id` = #{id}
+    </select>
+
+    <!-- 查询所有章节 -->
+    <select id="getBookChapters" resultType="com.mao.entity.BookChapter">
+        SELECT `id`,`order`,`name`,`book_id` FROM tt_book_chapter
+        WHERE `book_id` = #{book_id} ORDER BY `order`
     </select>
 
 </mapper>

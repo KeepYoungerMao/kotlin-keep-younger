@@ -5,7 +5,12 @@ import com.mao.config.NoArg
 
 @NoArg @AllOpen class Operation(var update: Long?, var delete: Boolean)
 
-@AllOpen class Page(var page: Int?, var row: Int?)
+@AllOpen class Page(var page: Int, var row: Int) {
+    fun correct() {
+        if (page <= 0) page = 1
+        if (row <= 0) row = 20
+    }
+}
 
 @NoArg
 data class Book(var id: String,
@@ -27,6 +32,7 @@ data class Book(var id: String,
                 override var update: Long?,
                 override var delete: Boolean): Operation(update, delete)
 
+@NoArg
 data class BookChapter(var id: String,
                        var order: Int?,
                        var name: String?,
@@ -39,9 +45,16 @@ data class BookParam(var name: String?,
                      var dynasty: Int?,
                      var free: Boolean?,
                      var off_sale: Boolean?,
-                     override var page: Int?,
-                     override var row: Int?): Page(page, row)
+                     override var page: Int,
+                     override var row: Int): Page(page, row) {
+    companion object {
+        fun default() : BookParam {
+            return BookParam(null,null,0,0,null,null,1,20)
+        }
+    }
+}
 
+@NoArg
 data class Buddhist(var id: String,
                     var name: String?,
                     var auth: String?,
@@ -53,6 +66,7 @@ data class Buddhist(var id: String,
                     override var update: Long?,
                     override var delete: Boolean): Operation(update, delete)
 
+@NoArg
 data class BuddhistChapter(var id: String,
                            var pid: String,
                            var order: Int?,
@@ -62,9 +76,10 @@ data class BuddhistChapter(var id: String,
 data class BuddhistParam(var name: String?,
                          var auth: String?,
                          var type: String?,
-                         override var page: Int?,
-                         override var row: Int?): Page(page, row)
+                         override var page: Int,
+                         override var row: Int): Page(page, row)
 
+@NoArg
 data class Bjx(var id: String,
                var name: String?,
                var py: String?,
@@ -74,9 +89,10 @@ data class Bjx(var id: String,
 
 data class BjxParam(var name: String?,
                     var py: String?,
-                    override var page: Int?,
-                    override var row: Int?): Page(page, row)
+                    override var page: Int,
+                    override var row: Int): Page(page, row)
 
+@NoArg
 data class Live(var id: String,
                 var name: String?,
                 var url: String?,
@@ -86,6 +102,7 @@ data class Live(var id: String,
                 var tips: String?,
                 var useful: Boolean?)
 
+@NoArg
 data class Movie(var id: String,
                  var name: String?,
                  var image: String?,
@@ -102,6 +119,7 @@ data class Movie(var id: String,
                  override var update: Long?,
                  override var delete: Boolean): Operation(update, delete)
 
+@NoArg
 data class MovieM3u8(var type: String?, var url: String?)
 
 data class MovieParam(var name: String?,
@@ -111,9 +129,10 @@ data class MovieParam(var name: String?,
                       var time: String?,
                       var place: String?,
                       var place_id: Int?,
-                      override var page: Int?,
-                      override var row: Int?): Page(page, row)
+                      override var page: Int,
+                      override var row: Int): Page(page, row)
 
+@NoArg
 data class Pic(var id: String,
                var name: String?,
                var prl: Int,
@@ -135,7 +154,7 @@ data class PicParam(var name: String?, var pid: Long?, var sid: Long?)
  * @param param 请求参数
  * @param data 数据列表
  */
-data class PageData<T>(var total: Long, var current: Long, var param: Page, var data: MutableList<T>)
+data class PageData<T>(var total: Int, var current: Int, var param: Page, var data: MutableList<T>)
 
 /**
  * 数据类型字典

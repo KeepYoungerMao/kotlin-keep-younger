@@ -1,5 +1,7 @@
 package com.mao.service.data
 
+import com.mao.entity.BookParam
+import com.mao.entity.PageData
 import com.mao.entity.Response
 import com.mao.entity.ResponseData
 import com.mao.mapper.BookMapper
@@ -9,7 +11,7 @@ import org.springframework.stereotype.Service
 import javax.servlet.http.HttpServletRequest
 
 /**
- * 估计数据处理
+ * 古籍数据处理
  * @author create by mao at 2020/06/05 16:34:21
  */
 @Service
@@ -29,11 +31,20 @@ class DefaultBookService : BookService {
     }
 
     override fun getBooks(request: HttpServletRequest): ResponseData<*> {
-        return Response.ok(bookMapper.getBooks())
+        val param = ParamPackage.paramForm(request,BookParam::class.java)?:BookParam.default()
+        param.correct()
+        return Response.ok(bookMapper.getBooks(param))
     }
 
     override fun getBookByPage(request: HttpServletRequest): ResponseData<*> {
-        return Response.ok(bookMapper.getBookByPage())
+        val param = ParamPackage.paramForm(request,BookParam::class.java)?: BookParam.default()
+        param.correct()
+        val current = param.page
+        param.page = if (current <= 0) 0 else current.dec().times(param.row)
+        val list = bookMapper.getBookByPage(param)
+        val total = bookMapper.getBookTotalPage(param)
+        param.page = current
+        return Response.ok(PageData(totalPage(total,param.row),param.page,param,list))
     }
 
     override fun getBookClassify(request: HttpServletRequest): ResponseData<*> {
@@ -41,11 +52,23 @@ class DefaultBookService : BookService {
     }
 
     override fun getBookChapterById(request: HttpServletRequest): ResponseData<*> {
-        return Response.ok(bookMapper.getBookChapterById())
+        val param = request.getParameter("id")
+        val id = try {
+            param?.toLong()?:-1
+        } catch (e: NumberFormatException) {
+            return Response.error("invalid param id: $param")
+        }
+        return Response.ok(bookMapper.getBookChapterById(id))
     }
 
     override fun getBookChapters(request: HttpServletRequest): ResponseData<*> {
-        return Response.ok(bookMapper.getBookChapters())
+        val param = request.getParameter("book_id")
+        val bookId = try {
+            param?.toLong()?:-1
+        } catch (e: NumberFormatException) {
+            return Response.error("invalid param book_id: $param")
+        }
+        return Response.ok(bookMapper.getBookChapters(bookId))
     }
 
     override fun updateBook(request: HttpServletRequest): ResponseData<*> {
@@ -96,6 +119,20 @@ class DefaultBookService : BookService {
     override fun deleteBookChapter(request: HttpServletRequest): ResponseData<*> {
         bookMapper.deleteBookChapter()
         return Response.ok("SUCCESS")
+    }
+
+    /**
+     * 获取分页数据的总页数
+     * 举例
+     * total    row    d    equals    result
+     * 100      20     5    true      5
+     * 101      20     5    false     5+1
+     */
+    private fun totalPage(total: Int, row: Int) : Int {
+        if (total <= 0)
+            return 0
+        val d = total.div(row)
+        return if (row.times(d) == total) d else d.inc()
     }
 
 }

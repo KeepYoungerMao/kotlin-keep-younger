@@ -125,15 +125,22 @@ object ParamPackage {
                 val name = parameter.name
                 val value = params[name]
                 when (parameter.type.name) {
-                    "java.lang.Integer" -> args[i] = value?.get(0)?.toInt()
-                    "java.lang.Short" -> args[i] = value?.get(0)?.toShort()
-                    "java.lang.Byte" -> args[i] = value?.get(0)?.toByte()
+                    "java.lang.Integer" -> args[i] = value?.get(0)?.toInt()?:0
+                    "java.lang.Short" -> args[i] = value?.get(0)?.toShort()?:0
+                    "java.lang.Byte" -> args[i] = value?.get(0)?.toByte()?:0
                     "java.lang.Boolean" -> args[i] = value?.get(0)?.toBoolean()
-                    "java.lang.Long" -> args[i] = value?.get(0)?.toLong()
-                    "java.lang.Float" -> args[i] = value?.get(0)?.toFloat()
-                    "java.lang.Double" -> args[i] = value?.get(0)?.toDouble()
+                    "java.lang.Long" -> args[i] = value?.get(0)?.toLong()?:0
+                    "java.lang.Float" -> args[i] = value?.get(0)?.toFloat()?:0
+                    "java.lang.Double" -> args[i] = value?.get(0)?.toDouble()?:0
                     "java.lang.String" -> args[i] = value?.get(0)
-                    else -> args[i] = null
+                    "int" -> args[i] = value?.get(0)?.toInt()?:0
+                    "short" -> args[i] = value?.get(0)?.toInt()?:0
+                    "byte" -> args[i] = value?.get(0)?.toInt()?:0
+                    "long" -> args[i] = value?.get(0)?.toInt()?:0
+                    "float" -> args[i] = value?.get(0)?.toInt()?:0
+                    "double" -> args[i] = value?.get(0)?.toInt()?:0
+                    "boolean" -> args[i] = value?.get(0)?.toInt()?:false
+                    else -> throw Exception("not supported parameter type: ${parameter.type.name}")
                 }
             } }
         } catch (e: Exception) {
