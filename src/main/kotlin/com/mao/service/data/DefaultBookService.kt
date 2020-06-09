@@ -1,9 +1,6 @@
 package com.mao.service.data
 
-import com.mao.entity.BookParam
-import com.mao.entity.PageData
-import com.mao.entity.Response
-import com.mao.entity.ResponseData
+import com.mao.entity.*
 import com.mao.mapper.BookMapper
 import com.mao.mapper.DataDictMapper
 import org.springframework.beans.factory.annotation.Autowired
@@ -31,13 +28,13 @@ class DefaultBookService : BookService {
     }
 
     override fun getBooks(request: HttpServletRequest): ResponseData<*> {
-        val param = ParamPackage.paramForm(request,BookParam::class.java)?:BookParam.default()
+        val param = ParamUtil.paramForm(request,BookParam::class.java)?:BookParam.default()
         param.correct()
         return Response.ok(bookMapper.getBooks(param))
     }
 
     override fun getBookByPage(request: HttpServletRequest): ResponseData<*> {
-        val param = ParamPackage.paramForm(request,BookParam::class.java)?: BookParam.default()
+        val param = ParamUtil.paramForm(request,BookParam::class.java)?: BookParam.default()
         param.correct()
         val current = param.page
         param.page = if (current <= 0) 0 else current.dec().times(param.row)
@@ -72,7 +69,11 @@ class DefaultBookService : BookService {
     }
 
     override fun updateBook(request: HttpServletRequest): ResponseData<*> {
-        bookMapper.updateBook()
+        val book = ParamUtil.paramBody(request,Book::class.java) ?: return Response.error("loss param body")
+        val check = ParamUtil.check(book)
+        if (null != check)
+            return Response.error(check)
+        //bookMapper.updateBook()
         return Response.ok("SUCCESS")
     }
 

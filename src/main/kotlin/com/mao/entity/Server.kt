@@ -1,24 +1,12 @@
 package com.mao.entity
 
-import org.springframework.beans.factory.annotation.Value
+import com.mao.config.NoArg
+import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.PropertySource
 import org.springframework.stereotype.Component
 
+@NoArg
 @Component
 @PropertySource("classpath:/server.properties")
-class Server {
-
-    @Value("\${server.name}")
-    lateinit var name: String
-    @Value("\${server.link}")
-    private lateinit var link: String
-    @Value("\${server.version}")
-    private lateinit var version: String
-    @Value("\${server.description}")
-    private lateinit var description: String
-    @Value("\${server.ip}")
-    private lateinit var ip: String
-    @Value("\${server.port}")
-    private lateinit var port: String
-
-}
+@ConfigurationProperties(prefix = "server")
+data class Server(var name: String, var link: String, var version: String, var description: String, var ip: String, var port: String)

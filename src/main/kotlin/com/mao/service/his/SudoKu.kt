@@ -50,10 +50,7 @@ class SudoKu {
     /**
      * 对外提供的分析方法
      */
-    fun analyse(src: Array<Array<Int>>?) {
-        if (null != src)
-            analyse(src,0,0)
-    }
+    fun analyse(src: Array<Array<Int>>?): () -> Unit = { if (null != src) analyse(src,0,0) }
 
     /**
      * 解析主方法：

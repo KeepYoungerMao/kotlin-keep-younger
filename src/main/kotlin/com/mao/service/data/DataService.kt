@@ -27,6 +27,9 @@ interface DataService {
 
 }
 
+/**
+ * 古籍数据处理
+ */
 interface BookService {
     fun getBookById(request: HttpServletRequest) : ResponseData<*>
     fun getBooks(request: HttpServletRequest) : ResponseData<*>
@@ -46,6 +49,9 @@ interface BookService {
     fun deleteBookChapter(request: HttpServletRequest) : ResponseData<*>
 }
 
+/**
+ * 百家姓数据处理
+ */
 interface BjxService {
     fun getBjxById(request: HttpServletRequest) : ResponseData<*>
     fun getBjxS(request: HttpServletRequest) : ResponseData<*>
@@ -58,6 +64,9 @@ interface BjxService {
     fun deleteBjx(request: HttpServletRequest) : ResponseData<*>
 }
 
+/**
+ * 佛经数据处理
+ */
 interface BuddhistService {
     fun getBuddhistById(request: HttpServletRequest) : ResponseData<*>
     fun getBuddhists(request: HttpServletRequest) : ResponseData<*>
@@ -77,6 +86,9 @@ interface BuddhistService {
     fun deleteBuddhistChapter(request: HttpServletRequest) : ResponseData<*>
 }
 
+/**
+ * 直播源数据处理
+ */
 interface LiveService {
     fun getLiveById(request: HttpServletRequest) : ResponseData<*>
     fun getLives(request: HttpServletRequest) : ResponseData<*>
@@ -89,6 +101,9 @@ interface LiveService {
     fun deleteLive(request: HttpServletRequest) : ResponseData<*>
 }
 
+/**
+ * 电影数据处理
+ */
 interface MovieService {
     fun getMovieById(request: HttpServletRequest) : ResponseData<*>
     fun getMovies(request: HttpServletRequest) : ResponseData<*>
@@ -101,6 +116,9 @@ interface MovieService {
     fun deleteMovie(request: HttpServletRequest) : ResponseData<*>
 }
 
+/**
+ * 图片数据处理
+ */
 interface PicService {
     fun getPicById(request: HttpServletRequest) : ResponseData<*>
     fun getPics(request: HttpServletRequest) : ResponseData<*>

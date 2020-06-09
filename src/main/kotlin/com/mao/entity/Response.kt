@@ -3,31 +3,17 @@ package com.mao.entity
 
 object Response {
 
-    //private val objectMapper : ObjectMapper = jacksonObjectMapper()
+    fun <T> ok(data: T?) : ResponseData<T> = o(ResponseEnum.SUCCESS,data)
 
-    fun <T> ok(data: T?) : ResponseData<T> {
-        return o(ResponseEnum.SUCCESS,data)
-    }
+    fun permission(message: String?) : ResponseData<String> = o(ResponseEnum.PERMISSION,message)
 
-    fun permission(message: String?) : ResponseData<String> {
-        return o(ResponseEnum.PERMISSION,message)
-    }
+    fun notFound(message: String?) : ResponseData<String> = o(ResponseEnum.NOTFOUND,message)
 
-    fun notFound(message: String?) : ResponseData<String> {
-        return o(ResponseEnum.NOTFOUND,message)
-    }
+    fun notAllowed(message: String?) : ResponseData<String> = o(ResponseEnum.NOT_ALLOWED,message)
 
-    fun notAllowed(message: String?) : ResponseData<String> {
-        return o(ResponseEnum.NOT_ALLOWED,message)
-    }
+    fun error(message: String?) : ResponseData<String> = o(ResponseEnum.ERROR,message)
 
-    fun error(message: String?) : ResponseData<String> {
-        return o(ResponseEnum.ERROR,message)
-    }
-
-    private fun <T> o(type: ResponseEnum, data: T?) : ResponseData<T> {
-        return ResponseData(type.code,type.msg,data)
-    }
+    private fun <T> o(type: ResponseEnum, data: T?) : ResponseData<T> = ResponseData(type.code,type.msg,data)
 
 }
 

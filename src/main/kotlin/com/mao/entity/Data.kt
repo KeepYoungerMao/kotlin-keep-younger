@@ -1,7 +1,6 @@
 package com.mao.entity
 
-import com.mao.config.AllOpen
-import com.mao.config.NoArg
+import com.mao.config.*
 
 @NoArg @AllOpen class Operation(var update: Long?, var delete: Boolean)
 
@@ -13,9 +12,9 @@ import com.mao.config.NoArg
 }
 
 @NoArg
-data class Book(var id: String,
-                var name: String?,
-                var auth: String?,
+data class Book(@NeedNumber var id: String?,
+                @NeedRangeLength(20) var name: String?,
+                @NeedRangeLength(20) var auth: String?,
                 var image: String?,
                 var s_image: String?,
                 var intro: String?,
@@ -33,7 +32,7 @@ data class Book(var id: String,
                 override var delete: Boolean): Operation(update, delete)
 
 @NoArg
-data class BookChapter(var id: String,
+data class BookChapter(var id: String?,
                        var order: Int?,
                        var name: String?,
                        var book_id: String,
@@ -55,7 +54,7 @@ data class BookParam(var name: String?,
 }
 
 @NoArg
-data class Buddhist(var id: String,
+data class Buddhist(var id: String?,
                     var name: String?,
                     var auth: String?,
                     var image: String?,
@@ -67,7 +66,7 @@ data class Buddhist(var id: String,
                     override var delete: Boolean): Operation(update, delete)
 
 @NoArg
-data class BuddhistChapter(var id: String,
+data class BuddhistChapter(var id: String?,
                            var pid: String,
                            var order: Int?,
                            var title: String?,
@@ -80,7 +79,7 @@ data class BuddhistParam(var name: String?,
                          override var row: Int): Page(page, row)
 
 @NoArg
-data class Bjx(var id: String,
+data class Bjx(var id: String?,
                var name: String?,
                var py: String?,
                var src: String?,
@@ -93,7 +92,7 @@ data class BjxParam(var name: String?,
                     override var row: Int): Page(page, row)
 
 @NoArg
-data class Live(var id: String,
+data class Live(var id: String?,
                 var name: String?,
                 var url: String?,
                 var type: Int?,
@@ -103,7 +102,7 @@ data class Live(var id: String,
                 var useful: Boolean?)
 
 @NoArg
-data class Movie(var id: String,
+data class Movie(var id: String?,
                  var name: String?,
                  var image: String?,
                  var actor: String?,
@@ -133,7 +132,7 @@ data class MovieParam(var name: String?,
                       override var row: Int): Page(page, row)
 
 @NoArg
-data class Pic(var id: String,
+data class Pic(var id: String?,
                var name: String?,
                var prl: Int,
                var psl: Int,

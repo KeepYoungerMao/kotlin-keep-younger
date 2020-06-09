@@ -22,13 +22,19 @@ class DefaultDataService : DataService {
     @Autowired private lateinit var movieService: MovieService
     @Autowired private lateinit var picService: PicService
 
+    companion object {
+        const val OPERATION = "operation"
+        const val DATA = "data"
+        const val METHOD = "method"
+    }
+
     /**
      * 数据处理
      */
     override fun dataOperation(operation: String, data: String, type: String, request: HttpServletRequest): ResponseData<*> {
         val ope = TypeOperation.requestType(operation)
         if (!TypeOperation.canRequest(ope,request))
-            return Response.notAllowed("request method ${request.method} not allowed.")
+            return requestError(request.method)
         return when (TypeOperation.dataType(data)) {
             DataType.BOOK -> bookOperation(ope,type,request)
             DataType.BJX -> bjxOperation(ope,type,request)
@@ -264,25 +270,15 @@ class DefaultDataService : DataService {
         }
     }
 
-    /**
-     * 操作类型错误返回
-     */
-    private fun operationError(name: String) : ResponseData<String> {
-        return Response.notAllowed("not support operation type $name yet.")
-    }
-
-    /**
-     * 数据类型错误返回
-     */
-    private fun dataError(name: String) : ResponseData<String> {
-        return Response.notAllowed("not support data type $name yet.")
-    }
-
-    /**
-     * 数据处理类型错误返回
-     */
-    private fun methodError(name: String) : ResponseData<String> {
-        return Response.notAllowed("not support method type $name yet.")
-    }
+    //请求类型错误
+    private fun requestError(method: String) : ResponseData<String> = Response.notAllowed("request method[$method] not allowed.")
+    //操作类型错误返回
+    private fun operationError(name: String) : ResponseData<String> = oError(OPERATION,name)
+    //数据类型错误返回
+    private fun dataError(name: String) : ResponseData<String> = oError(DATA,name)
+    //数据处理类型错误返回
+    private fun methodError(name: String) : ResponseData<String> = oError(METHOD,name)
+    //错误返回处理
+    private fun oError(type: String, name: String) : ResponseData<String> = Response.notAllowed("not support $type type: $name yet.")
 
 }
