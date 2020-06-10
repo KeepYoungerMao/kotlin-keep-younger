@@ -45,10 +45,21 @@ enum class DataType {
     ERROR, BOOK, BJX, BUDDHIST, LIVE, MOVIE, PIC
 }
 
+/**
+ * 外部数据类型
+ * IP_ADDRESS：  ip地址查询
+ * CITY_WEATHER：城市天气信息查询
+ * SUDO_KU：     数独解析
+ */
 enum class HisType {
     ERROR, IP_ADDRESS, CITY_WEATHER, SUDO_KU
 }
 
+/**
+ * 外部请求数据类型
+ * SRC：         请求内容
+ * 如有分类内容再说
+ */
 enum class HisMethod {
     ERROR, SRC
 }
@@ -69,6 +80,7 @@ enum class DataMethod {
 
 /**
  * 分发参数的处理
+ * 资源类型转化
  * 操作类型转化
  * 数据类型转化
  * 数据处理方式类型转化
@@ -171,13 +183,13 @@ object ParamUtil {
                 val name = parameter.name
                 val value = params[name]
                 when (parameter.type.name) {
-                    "java.lang.Integer" -> args[i] = value?.get(0)?.toInt()?:0
-                    "java.lang.Short" -> args[i] = value?.get(0)?.toShort()?:0
-                    "java.lang.Byte" -> args[i] = value?.get(0)?.toByte()?:0
+                    "java.lang.Integer" -> args[i] = value?.get(0)?.toInt()
+                    "java.lang.Short" -> args[i] = value?.get(0)?.toShort()
+                    "java.lang.Byte" -> args[i] = value?.get(0)?.toByte()
                     "java.lang.Boolean" -> args[i] = value?.get(0)?.toBoolean()
-                    "java.lang.Long" -> args[i] = value?.get(0)?.toLong()?:0
-                    "java.lang.Float" -> args[i] = value?.get(0)?.toFloat()?:0
-                    "java.lang.Double" -> args[i] = value?.get(0)?.toDouble()?:0
+                    "java.lang.Long" -> args[i] = value?.get(0)?.toLong()
+                    "java.lang.Float" -> args[i] = value?.get(0)?.toFloat()
+                    "java.lang.Double" -> args[i] = value?.get(0)?.toDouble()
                     "java.lang.String" -> args[i] = value?.get(0)
                     "int" -> args[i] = value?.get(0)?.toInt()?:0
                     "short" -> args[i] = value?.get(0)?.toInt()?:0
@@ -202,14 +214,28 @@ object ParamUtil {
      * 直接使用Jackson读取转化即可。
      */
     fun <T> paramBody(request: HttpServletRequest, t: Class<T>) : T? {
-        val reader = BufferedReader(InputStreamReader(request.inputStream))
-        val sb = StringBuilder()
-        reader.forEachLine { sb.append(it) }
+        val json = bodyString(request)
         return try {
-            jacksonObjectMapper().readValue(sb.toString(),t)
+            jacksonObjectMapper().readValue(json, t)
         } catch (e: Exception) {
             null
         }
+    }
+
+    fun <T> paramListBody(request: HttpServletRequest, t: Class<T>) : List<T>? {
+        val json = bodyString(request)?: return null
+        return try {
+            jacksonObjectMapper().readValue(json, jacksonObjectMapper().typeFactory.constructParametricType(List::class.java,t))
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    private fun bodyString(request: HttpServletRequest) : String? {
+        val reader = BufferedReader(InputStreamReader(request.inputStream))
+        val sb = StringBuilder()
+        reader.forEachLine { sb.append(it) }
+        return if (sb.isNotEmpty()) sb.toString() else null
     }
 
     /**
@@ -227,7 +253,7 @@ object ParamUtil {
             val value = it.get(param)?.toString()
             if (!ignore.contains(name)) {
                 val annotations = it.declaredAnnotations
-                if (null != annotations && annotations.isNotEmpty()){
+                if (annotations.isNotEmpty()){
                     annotations.forEach { a ->
                         run {
                             if (a is NeedNumber) {

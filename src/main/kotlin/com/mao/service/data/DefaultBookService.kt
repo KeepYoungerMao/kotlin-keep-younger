@@ -5,10 +5,13 @@ import com.mao.mapper.BookMapper
 import com.mao.mapper.DataDictMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import javax.servlet.http.HttpServletRequest
 
 /**
  * 古籍数据处理
+ * 对于数据的更新：只判断是否为null（为null时不做更新），对于空字符串不做判断（可能更新只为删除这些数据）
+ * 其他类型的更新操作采用同样的判断
  * @author create by mao at 2020/06/05 16:34:21
  */
 @Service
@@ -68,17 +71,31 @@ class DefaultBookService : BookService {
         return Response.ok(bookMapper.getBookChapters(bookId))
     }
 
+    @Transactional
     override fun updateBook(request: HttpServletRequest): ResponseData<*> {
-        val book = ParamUtil.paramBody(request,Book::class.java) ?: return Response.error("loss param body")
+        val book = ParamUtil.paramBody(request,Book::class.java) ?: return Response.error("loss body param.")
         val check = ParamUtil.check(book)
         if (null != check)
             return Response.error(check)
-        //bookMapper.updateBook()
+        book.update = System.currentTimeMillis()
+        bookMapper.updateBook(book)
         return Response.ok("SUCCESS")
     }
 
+    @Transactional
     override fun updateBooks(request: HttpServletRequest): ResponseData<*> {
-        bookMapper.updateBooks()
+        val books = ParamUtil.paramListBody(request,Book::class.java)?:return Response.error("loss body param.")
+        books.forEach {
+            kotlin.run {
+                val check = ParamUtil.check(it)
+                if (null != check)
+                    return Response.error(check)
+            }
+        }
+        books.forEach {
+            it.update = System.currentTimeMillis()
+            bookMapper.updateBook(it)
+        }
         return Response.ok("SUCCESS")
     }
 

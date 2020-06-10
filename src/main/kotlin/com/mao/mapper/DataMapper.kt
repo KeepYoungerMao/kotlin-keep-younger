@@ -15,8 +15,7 @@ interface BookMapper {
     fun getBookTotalPage(param: BookParam) : Int
     fun getBookChapterById(@Param("id") id: Long) : BookChapter
     fun getBookChapters(@Param("book_id") book_id: Long) : MutableList<BookChapter>
-    fun updateBook()
-    fun updateBooks()
+    fun updateBook(book: Book)
     fun updateBookChapter()
     fun updateBookChapters()
     fun saveBook()

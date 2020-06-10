@@ -78,4 +78,55 @@
         WHERE `book_id` = #{book_id} ORDER BY `order`
     </select>
 
+    <!-- 更新古籍数据 -->
+    <update id="updateBook" parameterType="com.mao.entity.Book">
+        UPDATE tt_book SET `update` = #{update}
+        <if test="name != null">
+            ,`name` = #{name}
+        </if>
+        <if test="auth != null">
+            ,`auth` = #{auth}
+        </if>
+        <if test="image != null">
+            ,`image` = #{image}
+        </if>
+        <if test="s_image != null">
+            ,`s_image` = #{s_image}
+        </if>
+        <if test="intro != null">
+            ,`intro` = #{intro}
+        </if>
+        <if test="guide != null">
+            ,`guide` = #{guide}
+        </if>
+        <if test="guide_auth != null">
+            ,`guide_auth` = #{guide_auth}
+        </if>
+        <if test="score != null">
+            ,`score` = #{score}
+        </if>
+        <if test="type != null">
+            ,`type` = #{type}
+        </if>
+        <if test="type_id != null and type_id > 0">
+            ,`type_id` = #{type_id}
+        </if>
+        <if test="dynasty != null">
+            ,`dynasty` = #{dynasty}
+        </if>
+        <if test="dynasty_id != null and dynasty_id > 0">
+            ,`dynasty_id` = #{dynasty_id}
+        </if>
+        <if test="count != null and count > 0">
+            ,`count` = #{count}
+        </if>
+        <if test="free != null">
+            ,`free` = #{free}
+        </if>
+        <if test="off_sale != null">
+            ,`off_sale` = #{off_sale}
+        </if>
+        WHERE `id` = #{id}
+    </update>
+
 </mapper>

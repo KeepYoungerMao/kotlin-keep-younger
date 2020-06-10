@@ -12,17 +12,28 @@ import com.mao.config.*
 }
 
 @NoArg
-data class Book(@NeedNumber var id: String?,
-                @NeedRangeLength(20) var name: String?,
-                @NeedRangeLength(20) var auth: String?,
+data class Book(@NeedNumber
+                var id: String?,
+                @NeedRangeLength(50)
+                var name: String?,
+                @NeedRangeLength(50)
+                var auth: String?,
+                @NeedRangeLength(100)
                 var image: String?,
+                @NeedRangeLength(100)
                 var s_image: String?,
+                @NeedRangeText
                 var intro: String?,
+                @NeedRangeLength(100)
                 var guide: String?,
+                @NeedRangeLength(20)
                 var guide_auth: String?,
+                @NeedRangeLength(5)
                 var score: String?,
+                @NeedRangeLength(20)
                 var type: String?,
                 var type_id: Int?,
+                @NeedRangeLength(20)
                 var dynasty: String?,
                 var dynasty_id: Int?,
                 var count: Int?,

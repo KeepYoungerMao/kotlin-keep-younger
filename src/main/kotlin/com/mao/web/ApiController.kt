@@ -112,7 +112,7 @@ class ResponseAdvice : ResponseBodyAdvice<Any> {
                                  request: ServerHttpRequest,
                                  response: ServerHttpResponse): Any? {
         if (null != data && data is ResponseData<*> && data.code != 404) {
-            val remark = if (data.code == 500) data.data as String else null
+            val remark = if (data.code != 200) data.data as String else null
             logService.saveLog(request.principal?.name, (request as ServletServerHttpRequest).servletRequest, data.code,remark)
         }
         return data

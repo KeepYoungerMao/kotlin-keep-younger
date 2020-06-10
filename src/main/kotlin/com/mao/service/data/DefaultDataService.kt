@@ -1,6 +1,7 @@
 package com.mao.service.data
 
-import com.mao.entity.*
+import com.mao.entity.Response
+import com.mao.entity.ResponseData
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import javax.servlet.http.HttpServletRequest
@@ -32,6 +33,8 @@ class DefaultDataService : DataService {
      */
     override fun dataOperation(operation: String, data: String, type: String, request: HttpServletRequest) : ResponseData<*> {
         val ope = TypeOperation.requestType(operation)
+        if (ope == RequestType.ERROR)
+            return operationError(operation)
         if (!TypeOperation.canRequest(ope,request))
             return requestError(request.method)
         return when (TypeOperation.dataType(data)) {
