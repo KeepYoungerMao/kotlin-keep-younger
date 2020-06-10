@@ -5,7 +5,6 @@ import com.mao.entity.ResponseData
 import com.mao.entity.Server
 import com.mao.service.GlobalService
 import com.mao.service.log.LogService
-import org.apache.ibatis.binding.BindingException
 import org.apache.ibatis.exceptions.PersistenceException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.MethodParameter
@@ -18,7 +17,6 @@ import org.springframework.http.server.ServletServerHttpRequest
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.NoHandlerFoundException
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice
-import java.net.BindException
 import java.sql.SQLException
 import javax.servlet.http.HttpServletRequest
 
