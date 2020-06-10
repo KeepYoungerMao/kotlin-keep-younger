@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mao.mapper.LogMapper">
+
+    <insert id="saveLog" parameterType="com.mao.entity.Log">
+        INSERT INTO sys_operation_log(`id`,`user`,`uri`,`ip`,`operation`,`resource`,`data`,
+        `method`,`status`,`remark`,`date`)
+        VALUE(#{id},#{user},#{uri},#{ip},#{operation},#{resource},#{data},#{method},#{status},#{remark},#{date})
+    </insert>
+
+</mapper>

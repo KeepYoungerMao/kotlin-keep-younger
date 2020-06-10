@@ -9,4 +9,11 @@ import org.springframework.stereotype.Component
 @Component
 @PropertySource("classpath:/server.properties")
 @ConfigurationProperties(prefix = "server")
-data class Server(var name: String, var link: String, var version: String, var description: String, var ip: String, var port: String)
+data class Server(var name: String,
+                  var link: String,
+                  var version: String,
+                  var description: String,
+                  var ip: String,
+                  var port: Int,
+                  var dataCenter: Long,
+                  var machine: Long)

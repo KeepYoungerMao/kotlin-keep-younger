@@ -19,7 +19,16 @@ import javax.servlet.http.HttpServletRequest
  * 请求类型错误时转化至ERROR
  */
 enum class RequestType {
-    SEARCH, SAVE, EDIT, REMOVE, ERROR
+    ERROR, SEARCH, SAVE, EDIT, REMOVE
+}
+
+/**
+ * 最顶层请求类型：表示什么范围的请求
+ * HIS：his类型的请求，主要为外部调用请求
+ * DATA：数据请求，主要为数据库的数据调用
+ */
+enum class ResourceType {
+    ERROR, HIS, DATA
 }
 
 /**
@@ -33,7 +42,15 @@ enum class RequestType {
  * 数据类型错误时转化至ERROR
  */
 enum class DataType {
-    BOOK, BJX, BUDDHIST, LIVE, MOVIE, PIC, ERROR
+    ERROR, BOOK, BJX, BUDDHIST, LIVE, MOVIE, PIC
+}
+
+enum class HisType {
+    ERROR, IP_ADDRESS, CITY_WEATHER, SUDO_KU
+}
+
+enum class HisMethod {
+    ERROR, SRC
 }
 
 /**
@@ -47,7 +64,7 @@ enum class DataType {
  * 处理方式类型错误时转化至ERROR
  */
 enum class DataMethod {
-    SRC, LIST, PAGE, CHAPTER, CHAPTERS, CLASSIFY, ERROR
+    ERROR, SRC, LIST, PAGE, CHAPTER, CHAPTERS, CLASSIFY
 }
 
 /**
@@ -58,6 +75,14 @@ enum class DataMethod {
  * 请求方式是否正确的判断
  */
 object TypeOperation {
+
+    fun resourceType(resource: String?) : ResourceType {
+        return try {
+            ResourceType.valueOf(resource?.toUpperCase()?:"ERROR")
+        } catch (e: Exception) {
+            ResourceType.ERROR
+        }
+    }
 
     fun requestType(operation: String?) : RequestType {
         return try {
@@ -75,11 +100,27 @@ object TypeOperation {
         }
     }
 
+    fun hisType(his: String?) : HisType {
+        return try {
+            HisType.valueOf(his?.toUpperCase()?:"ERROR")
+        } catch (e: Exception) {
+            HisType.ERROR
+        }
+    }
+
     fun dataMethod(type: String?) : DataMethod {
         return try {
             DataMethod.valueOf(type?.toUpperCase()?:"ERROR")
         } catch (e: Exception) {
             DataMethod.ERROR
+        }
+    }
+
+    fun hisMethod(type: String?) : HisMethod {
+        return try {
+            HisMethod.valueOf(type?.toUpperCase()?:"ERROR")
+        } catch (e: Exception) {
+            HisMethod.ERROR
         }
     }
 

@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import javax.servlet.http.HttpServletRequest
 
-
 /**
  * 数据处理
  * 此类只用于请求分发
@@ -29,9 +28,9 @@ class DefaultDataService : DataService {
     }
 
     /**
-     * 数据处理
+     * data数据类型处理
      */
-    override fun dataOperation(operation: String, data: String, type: String, request: HttpServletRequest): ResponseData<*> {
+    override fun dataOperation(operation: String, data: String, type: String, request: HttpServletRequest) : ResponseData<*> {
         val ope = TypeOperation.requestType(operation)
         if (!TypeOperation.canRequest(ope,request))
             return requestError(request.method)

@@ -5,11 +5,13 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.mao.entity.Response
 import com.mao.entity.ResponseData
 import com.mao.entity.WeatherResult
+import com.mao.service.data.ParamUtil
 import com.mao.util.HttpUtil
 import org.apache.http.impl.client.CloseableHttpClient
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.util.regex.Pattern
+import javax.servlet.http.HttpServletRequest
 
 @Service
 class DefaultHisService : HisService {
@@ -23,14 +25,14 @@ class DefaultHisService : HisService {
 
     @Autowired private lateinit var closeableHttpClient: CloseableHttpClient
 
-    override fun addressIp(ip: String?): ResponseData<*> {
-        if (null == ip)
-            return Response.error("loss param: ip")
+    override fun addressIp(request: HttpServletRequest): ResponseData<*> {
+        val ip = request.getParameter("ip") ?: return Response.error("loss param: ip")
         val json = HttpUtil.get("http://api.map.baidu.com/location/ip?ip=$ip&ak=$AK",closeableHttpClient)
         return Response.ok(json)
     }
 
-    override fun weatherCity(city: String?): ResponseData<*> {
+    override fun weatherCity(request: HttpServletRequest): ResponseData<*> {
+        val city = request.getParameter("city") ?: return Response.error("loss param: city")
         val json = HttpUtil.get("http://wthrcdn.etouch.cn/weather_mini?city=$city", closeableHttpClient)
         return try {
             val result = jacksonObjectMapper().readValue<WeatherResult>(json ?: "")
@@ -52,7 +54,8 @@ class DefaultHisService : HisService {
         return if (matcher.matches()) matcher.group(1) else str
     }
 
-    override fun sudoKu(array: Array<Array<Int>>?): ResponseData<*> {
+    override fun sudoKu(request: HttpServletRequest): ResponseData<*> {
+        val array = ParamUtil.paramBody(request,Array<Array<Int>>::class.java)
         val check = checkSudoKu(array)
         if (null != check)
             return Response.error(check)
