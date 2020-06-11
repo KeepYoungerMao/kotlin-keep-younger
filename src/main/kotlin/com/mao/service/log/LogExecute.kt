@@ -1,6 +1,7 @@
 package com.mao.service.log
 
 import com.mao.config.IdBuilder
+import com.mao.config.WebSecurityConfigurer
 import com.mao.entity.Log
 import com.mao.mapper.LogMapper
 import com.mao.service.data.*
@@ -41,10 +42,10 @@ class DefaultLogService : LogService {
      */
     private fun saveLog(user: String?, uri: String, ip: String, status: Int, remark: String?) {
         CompletableFuture.supplyAsync(Supplier {
-            if (uri.startsWith("/api2")) {
+            if (uri.startsWith(WebSecurityConfigurer.API_PRE)) {
                 val ips = if (ip == LOCALHOST) LOCALHOST_S else ip
                 val id = idBuilder.nextId()
-                val splits = uri.substring(6).split("/")
+                val splits = uri.substring(WebSecurityConfigurer.API_PRE.length.inc()).split("/")
                 val resource = if (splits.isNotEmpty()) TypeOperation.resourceType(splits[0]).ordinal else ResourceType.ERROR.ordinal
                 val operation = if (splits.size > 1) TypeOperation.requestType(splits[1]).ordinal else RequestType.ERROR.ordinal
                 val data = if (splits.size > 2) {
